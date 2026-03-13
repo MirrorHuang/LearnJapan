@@ -1,40 +1,54 @@
 <!DOCTYPE html>
-<html lang="en" dir="ltr">
+<html lang="zh-CN" dir="ltr">
 <head>
   <meta charset="UTF-8">
-  <title>Ionic App</title>
+  <title>Kou - 日语学习</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="format-detection" content="telephone=no">
   <meta name="msapplication-tap-highlight" content="no">
+  <meta name="description" content="Kou — 日语学习应用，含单词背诵、语法学习、听力练习等功能">
+
+  <!-- iOS PWA 支持 -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Kou">
+  <link rel="apple-touch-icon" sizes="192x192" href="assets/img/appicon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="assets/img/appicon.png">
 
   <link rel="icon" type="image/x-icon" href="assets/icon/favicon.ico">
   <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#4e8ef7">
-  
-  <!-- cordova.js required for cordova apps -->
-  <script src="cordova.js"></script>
 
-  <!-- un-comment this code to enable service worker
+  <!-- cordova.js 仅在 Cordova 原生壳环境下有效，浏览器环境 404 无妨 -->
+  <script>
+    if (window.cordova !== undefined || location.protocol === 'file:') {
+      document.write('<script src="cordova.js"><\/script>');
+    }
+  </script>
+
+  <!-- Service Worker 注册 -->
   <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log('service worker installed'))
-        .catch(err => console.log('Error', err));
+        .then(function() { console.log('[SW] registered'); })
+        .catch(function(err) { console.warn('[SW] registration failed', err); });
     }
-  </script>-->
+  </script>
 
   <link href="build/main.css" rel="stylesheet">
 
 </head>
 <body>
 
-  <!-- Ionic's root component and where the app will load -->
-  <ion-app></ion-app>
+  <!-- App 加载占位，防止白屏 -->
+  <ion-app>
+    <div id="app-loading" style="display:flex;align-items:center;justify-content:center;height:100vh;background:#fff;font-size:14px;color:#999;font-family:sans-serif;">
+      加载中…
+    </div>
+  </ion-app>
 
-  <!-- The polyfills js is generated during the build process -->
   <script src="build/polyfills.js"></script>
-
-  <!-- The bundle js is generated during the build process -->
+  <script src="build/vendor.js"></script>
   <script src="build/main.js"></script>
 
 </body>
