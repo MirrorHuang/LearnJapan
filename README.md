@@ -18,28 +18,6 @@
 - 创新使用了“假名直接标注”、“单词重音标识”等呈现形式，软件定义了一套纯文本语法规范
 - 手机版与电脑版共用核心库，便于移植
 
-# UI展示
-
-## 电脑版
-
-![](images/computer-ui.png)
-
-## 手机版
-
-![](images/mobile-ui1.webp)
-![](images/mobile-ui2.webp)
-![](images/mobile-ui3.webp)
-
-# 快速开始
-
-## 电脑版
-
-[在线体验](http://japan.icerdesign.com/)
-
-## 手机版
-
-[iOS Store](https://apps.apple.com/jp/app/标准日本语学习日志-初级-笔记-背单词-查语法/id1292939660)
-
 # 本地开发
 
 ## 环境要求
