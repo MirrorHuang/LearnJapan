@@ -1,4 +1,4 @@
-﻿<ion-header>
+<ion-header>
 
   <ion-navbar>
     <audio #audioplayer [src]="playsrc" controls="false" [hidden]="'false'"></audio>
@@ -21,6 +21,11 @@
     <ion-title *ngIf="!playerenable && item.words">{{ item.lesson }}</ion-title>
     <ion-title *ngIf="!playerenable && item.word" [innerHTML]="item.word | japanruby"></ion-title>
     <ion-title *ngIf="!playerenable && item.expression" [innerHTML]="item.expression"></ion-title>
+    <ion-buttons end *ngIf="item.idx && item.lesson">
+      <button ion-button icon-only (click)="toggleFavorite()">
+        <ion-icon [name]="isFavorited ? 'star' : 'star-outline'" [class.fav-active]="isFavorited"></ion-icon>
+      </button>
+    </ion-buttons>
   </ion-navbar>
 
 </ion-header>

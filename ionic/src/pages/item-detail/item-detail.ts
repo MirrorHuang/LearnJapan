@@ -1,7 +1,8 @@
-﻿import { Component, ViewChild, trigger, transition, style, animate } from '@angular/core';
+import { Component, ViewChild, trigger, transition, style, animate } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 import { Item } from '../../models/item';
+import { FavoritesProvider } from '../../providers/favorites';
 
 @Component({
   selector: 'page-item-detail',
@@ -31,13 +32,17 @@ export class ItemDetailPage {
   playprogress = 0;
   playprogressmax = 100;
   remember: boolean;
+  isFavorited: boolean = false;
+  favType: 'words' | 'grammar' = 'words';
 
-  constructor(public navCtrl: NavController, navParams: NavParams) {
+  constructor(public navCtrl: NavController, navParams: NavParams, private favoritesProvider: FavoritesProvider) {
     this.item = navParams.get('item');
     if (this.item.idx && this.item.lesson) {
       let rwords = JSON.parse(localStorage.getItem("rwords")) || {};
       let key = `${this.item.lesson}|${this.item.idx}`
       this.remember = rwords[key];
+      this.favType = this.item.expression ? 'grammar' : 'words';
+      this.isFavorited = this.favoritesProvider.isFav(this.favType, key);
     }
   }
 
@@ -98,5 +103,20 @@ export class ItemDetailPage {
     let key = `${item.lesson}|${item.idx}`
     rwords[key] = this.remember;
     localStorage.setItem("rwords", JSON.stringify(rwords));
+  }
+
+  toggleFavorite() {
+    if (!this.item.idx || !this.item.lesson) return;
+    this.favoritesProvider.toggle(this.favType, {
+      lesson: this.item.lesson,
+      idx: this.item.idx,
+      word: this.item.word || this.item.expression || '',
+      kana: this.item.kana || '',
+      kanji: this.item.kanji || '',
+      desc: this.item.desc || this.item.shortexplain || '',
+      pos: this.item.pos || '',
+      savedAt: 0
+    });
+    this.isFavorited = this.favoritesProvider.isFav(this.favType, `${this.item.lesson}|${this.item.idx}`);
   }
 }

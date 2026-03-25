@@ -1,4 +1,4 @@
-﻿// http://ionicframework.com/docs/v2/theming/
+// http://ionicframework.com/docs/v2/theming/
 
 
 // App Global Sass
@@ -14,6 +14,68 @@
 // To declare rules for a specific mode, create a child rule
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
+
+// ── iOS PWA 安装引导条 ──────────────────────────────────────────
+.pwa-install-banner {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 99999;
+  background: #1a1a2e;
+  color: #fff;
+  padding: 12px 16px;
+  box-shadow: 0 -2px 12px rgba(0,0,0,0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to   { transform: translateY(0); }
+}
+
+.pwa-install-content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.pwa-install-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  flex-shrink: 0;
+}
+
+.pwa-install-text {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.5;
+
+  strong { display: block; font-size: 14px; margin-bottom: 2px; }
+  span { color: #ccc; }
+}
+
+.pwa-share-icon {
+  width: 14px;
+  height: 14px;
+  vertical-align: middle;
+  margin: 0 2px;
+  color: #4e8ef7;
+}
+
+.pwa-install-close {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 18px;
+  padding: 4px 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+// ────────────────────────────────────────────────────────────────
 
 .line-break {
   overflow: inherit;

@@ -1,4 +1,4 @@
-﻿import { NewlinePipe } from './../providers/newline.pipe';
+import { NewlinePipe } from './../providers/newline.pipe';
 import { RecitePage } from './../pages/recite/recite';
 import { ReciteListPage } from './../pages/recite-list/recite-list';
 import { NgModule, ErrorHandler } from '@angular/core';
@@ -22,12 +22,14 @@ import { ItemDetailPage } from '../pages/item-detail/item-detail';
 import { MenuPage } from '../pages/menu/menu';
 import { SettingsPage } from '../pages/settings/settings';
 import { SearchPage } from '../pages/search/search';
+import { FavoritesPage } from '../pages/favorites/favorites';
 
 import { User } from '../providers/user';
 import { Api } from '../providers/api';
 import { Settings } from '../providers/settings';
 import { Items } from '../providers/items';
 //import { Items } from '../mocks/providers/items';
+import { FavoritesProvider } from '../providers/favorites';
 import { JapanRubyPipe } from '../providers/japan-ruby.pipe';
 
 import { ClipboardModule } from 'ngx-clipboard';
@@ -79,6 +81,7 @@ let pages : any[] = [
   SearchPage,
   ReciteListPage,
   RecitePage,
+  FavoritesPage,
 ];
 let modules = [
   JapanRubyPipe,
@@ -100,6 +103,7 @@ export function providers() {
     User,
     Api,
     Items,
+    FavoritesProvider,
 
     { provide: Settings, useFactory: provideSettings, deps: [ Storage ] },
     // Keep this to enable Ionic's runtime error handling during development

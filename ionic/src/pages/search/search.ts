@@ -1,8 +1,8 @@
-﻿import { Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
 
 import { ItemDetailPage } from '../item-detail/item-detail';
-import { Api, Items } from '../../providers/providers';
+import { Api, Items, FavoritesProvider } from '../../providers/providers';
 import { Item } from '../../models/item';
 
 @Component({
@@ -17,7 +17,7 @@ export class SearchPage {
   wordsShowMore = true;
   grammarShowMore = true;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public items: Items) { }
+  constructor(public navCtrl: NavController, public navParams: NavParams, public items: Items, private favorites: FavoritesProvider) { }
 
   /**
    * Perform a service for the proper items.
@@ -64,6 +64,42 @@ export class SearchPage {
   openItem(item: Item) {
     this.navCtrl.push(ItemDetailPage, {
       item: item
+    });
+  }
+
+  isWordFav(item: any): boolean {
+    if (!item.idx || !item.lesson) return false;
+    return this.favorites.isFav('words', `${item.lesson}|${item.idx}`);
+  }
+
+  isGrammarFav(item: any): boolean {
+    if (!item.idx || !item.lesson) return false;
+    return this.favorites.isFav('grammar', `${item.lesson}|${item.idx}`);
+  }
+
+  toggleWordFav(item: any) {
+    this.favorites.toggle('words', {
+      lesson: item.lesson || '',
+      idx: item.idx || '',
+      word: item.word || '',
+      kana: item.kana || '',
+      kanji: item.kanji || '',
+      desc: item.desc || '',
+      pos: item.pos || '',
+      savedAt: 0
+    });
+  }
+
+  toggleGrammarFav(item: any) {
+    this.favorites.toggle('grammar', {
+      lesson: item.lesson || '',
+      idx: item.idx || '',
+      word: item.expression || '',
+      kana: '',
+      kanji: '',
+      desc: item.shortexplain || '',
+      pos: '',
+      savedAt: 0
     });
   }
 

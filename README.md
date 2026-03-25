@@ -68,6 +68,7 @@ npm run ionic
 # 第二步：进入 ionic 目录，启动开发服务器
 cd ionic
 nvm use 10.18
+npm run build
 npm run ionic:serve
 ```
 

@@ -1,5 +1,5 @@
-import { Component, ViewChild } from '@angular/core';
-import {Platform, Nav, Config} from 'ionic-angular';
+import { Component, ViewChild, NgZone } from '@angular/core';
+import { Platform, Nav, Config } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
 
 import { Settings } from '../providers/providers';
@@ -25,6 +25,7 @@ import { TranslateService } from 'ng2-translate/ng2-translate';
 })
 export class MyApp {
   rootPage = FirstRunPage;
+  showIosInstallBanner = false;
 
   @ViewChild(Nav) nav: Nav;
 
@@ -43,7 +44,7 @@ export class MyApp {
     { title: 'Search', component: SearchPage }
   ]
 
-  constructor(translate: TranslateService, platform: Platform, settings: Settings, config: Config) {
+  constructor(translate: TranslateService, platform: Platform, settings: Settings, config: Config, private zone: NgZone) {
     // Set the default language for translation strings, and the current language.
     translate.setDefaultLang('en');
     translate.use('en')
@@ -57,7 +58,24 @@ export class MyApp {
         StatusBar.styleDefault();
         Splashscreen.hide();
       }
+      this.checkIosInstallPrompt();
     });
+  }
+
+  checkIosInstallPrompt() {
+    const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isInStandaloneMode = ('standalone' in window.navigator) && (window.navigator as any).standalone;
+    const dismissed = localStorage.getItem('pwa_ios_banner_dismissed');
+    if (isIos && !isInStandaloneMode && !dismissed) {
+      this.zone.run(() => {
+        this.showIosInstallBanner = true;
+      });
+    }
+  }
+
+  dismissIosBanner() {
+    this.showIosInstallBanner = false;
+    localStorage.setItem('pwa_ios_banner_dismissed', '1');
   }
 
   openPage(page) {

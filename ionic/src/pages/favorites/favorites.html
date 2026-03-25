@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-navbar>
+    <ion-title>我的收藏</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-content>
+
+  <div class="recite-btn-wrap">
+    <button ion-button full
+      [disabled]="favoriteWords.length === 0"
+      (click)="startRecite()">
+      <ion-icon name="refresh"></ion-icon>
+      背诵收藏单词（{{favoriteWords.length}} 个）
+    </button>
+  </div>
+
+  <ion-segment [(ngModel)]="segment">
+    <ion-segment-button value="words">
+      单词 ({{favoriteWords.length}})
+    </ion-segment-button>
+    <ion-segment-button value="grammar">
+      语法 ({{favoriteGrammar.length}})
+    </ion-segment-button>
+  </ion-segment>
+
+  <div [ngSwitch]="segment">
+
+    <ion-list *ngSwitchCase="'words'">
+      <div *ngIf="favoriteWords.length === 0" class="empty-state">
+        <ion-icon name="star-outline" class="empty-icon"></ion-icon>
+        <p>暂无收藏单词</p>
+        <p class="empty-hint">在搜索、详情或背单词页面点击 ★ 收藏</p>
+      </div>
+      <ion-item-sliding *ngFor="let word of favoriteWords">
+        <button ion-item (click)="openWord(word)">
+          <h2>
+            <span [innerHTML]="word.word"></span>
+            <span class="word-pos"> [{{word.pos}}]</span>
+          </h2>
+          <p>{{word.desc}}</p>
+          <p item-right [innerHTML]="word.kana"></p>
+        </button>
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="removeWord(word)">
+            <ion-icon name="trash"></ion-icon>
+            删除
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <ion-list *ngSwitchCase="'grammar'">
+      <div *ngIf="favoriteGrammar.length === 0" class="empty-state">
+        <ion-icon name="star-outline" class="empty-icon"></ion-icon>
+        <p>暂无收藏语法</p>
+        <p class="empty-hint">在搜索或详情页面点击 ★ 收藏</p>
+      </div>
+      <ion-item-sliding *ngFor="let g of favoriteGrammar">
+        <button ion-item (click)="openGrammar(g)">
+          <h2 [innerHTML]="g.word"></h2>
+          <p [innerHTML]="g.desc"></p>
+        </button>
+        <ion-item-options side="right">
+          <button ion-button color="danger" (click)="removeGrammar(g)">
+            <ion-icon name="trash"></ion-icon>
+            删除
+          </button>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+  </div>
+
+</ion-content>

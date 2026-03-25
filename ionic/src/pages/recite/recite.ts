@@ -1,6 +1,7 @@
 import { JapanRuby } from './../../providers/japan-ruby';
 import { Component } from '@angular/core';
 import { NavController, NavParams } from 'ionic-angular';
+import { FavoritesProvider } from '../../providers/favorites';
 
 declare var SpeechSynthesisUtterance: any;
 
@@ -12,6 +13,8 @@ interface IQuizCard {
 interface IQuizData {
   rid: string;
   rem?: boolean;
+  fav?: boolean;
+  orig?: any;
   tip: IQuizCard;
   desc: IQuizCard;
 }
@@ -26,12 +29,15 @@ export class RecitePage {
 
   onlyremember = true;
   wordremember = false;
-  autoremember = false;
+  wordfavorite = false;
+  fromFavorites = false;
   disableonlyremember = false;
   disablewordremember = false;
-  trialtext: string;
   autoreadword = true;
-  lefthandmode = true;
+
+  // 默克模式（UI 已隐藏，逻辑保留）
+  trialtext: string;
+  autoremember = false;
 
   originquizdata: Array<IQuizData>;
   quizdata: Array<IQuizData>;
@@ -44,9 +50,10 @@ export class RecitePage {
   cardsummary: string;
   shufflewords = false;
 
-  constructor(public navCtrl: NavController, navParams: NavParams) {
+  constructor(public navCtrl: NavController, navParams: NavParams, private favorites: FavoritesProvider) {
     this.wordlist = navParams.get('item');
     this.lesson = navParams.get('lesson');
+    this.fromFavorites = navParams.get('fromFavorites') || false;
     if (!this.isLocalstorageExist()) {
       this.disableonlyremember = true;
       this.disablewordremember = true;
@@ -63,12 +70,13 @@ export class RecitePage {
         let descsubtitle = "<span class='japan'>" + p.kana + "</span>" + "<span class='card-pos'>[" + p.pos + "]</span>";
         let tip = "<span class='card-explain'>" + p.desc + "</span>";
         tip += "<span class='card-pos'>[" + p.pos.slice(0, 1) + "]</span>";
-        return { tip: { title: tip }, desc: { title: desctitle, subtitle: descsubtitle, read: p.purekana }, rid: p.rid }
+        return { tip: { title: tip }, desc: { title: desctitle, subtitle: descsubtitle, read: p.purekana }, rid: p.rid, orig: p }
       });
 
     this.start(quizdata);
   }
-  changewordremember() {
+  toggleRemember() {
+    this.wordremember = !this.wordremember;
     if (this.wordremember) {
       this.rwords[this.quiz.rid] = true;
       this.quiz.rem = true;
@@ -78,6 +86,24 @@ export class RecitePage {
     }
     localStorage.setItem("rwords", JSON.stringify(this.rwords));
   }
+
+  changeFavorite() {
+    const orig = this.quiz.orig;
+    if (!orig) return;
+    this.favorites.toggle('words', {
+      lesson: orig.lesson || '',
+      idx: orig.idx || '',
+      word: orig.word || '',
+      kana: orig.kana || '',
+      kanji: orig.kanji || '',
+      desc: orig.desc || '',
+      pos: orig.pos || '',
+      savedAt: 0
+    });
+    this.wordfavorite = this.favorites.isFav('words', this.quiz.rid);
+    this.quiz.fav = this.wordfavorite;
+  }
+  // 默克模式：输入假名按回车翻页，autoremember 开启时输对自动标记已记住（UI 已隐藏）
   trialtextchallenge(e) {
     if (e.which == 13) {
       let autoremember = this.autoremember;
@@ -89,20 +115,9 @@ export class RecitePage {
       return false;
     }
   }
-  read(sentence) {
-    this.speak(sentence);
-  }
   next() {
     this.rollquiz(1);
     this.displayquiz();
-  }
-  nextleft() {
-    this.lefthandmode = true;
-    this.next();
-  }
-  nextright() {
-    this.lefthandmode = false;
-    this.next();
   }
   previous() {
     this.rollquiz(-1);
@@ -138,6 +153,8 @@ export class RecitePage {
     this.quizcontent = this.quizid % 2 == 0 ? this.quiz.tip : this.quiz.desc;
     this.cardsummary = (this.quiznum + 1) + '/' + (this.quizdata.length) + '(' + this.countRememberedWords() + ')';
     this.wordremember = this.quiz.rem ? true : false;
+    this.wordfavorite = this.favorites.isFav('words', this.quiz.rid);
+    this.quiz.fav = this.wordfavorite;
   }
   countRememberedWords() {
     var tt = 0;

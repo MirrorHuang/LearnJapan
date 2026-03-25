@@ -1,7 +1,7 @@
 <ion-header>
 
   <ion-navbar>
-    <ion-title>{{lesson}}</ion-title>
+    <ion-title>{{fromFavorites ? '收藏词' : lesson}}</ion-title>
     <ion-buttons end>
       <ion-badge>{{cardsummary}}</ion-badge>
     </ion-buttons>
@@ -11,23 +11,33 @@
 
 
 <ion-content>
-  <ion-card>
+  <ion-card class="quiz-card">
     <div class="card-title" [innerHTML]="quizcontent.title"></div>
     <div class="card-subtitle">
       <span [innerHTML]="quizcontent.subtitle"></span>
       <a *ngIf="quizcontent.read" (click)="speak(quizcontent.read)">[读]</a>
     </div>
+    <div class="card-actions">
+      <button ion-button clear class="action-btn" (click)="changeFavorite()">
+        <ion-icon [name]="wordfavorite ? 'star' : 'star-outline'" [class.fav-active]="wordfavorite"></ion-icon>
+        <span>收藏</span>
+      </button>
+      <button ion-button clear class="action-btn" [disabled]="disablewordremember" (click)="toggleRemember()">
+        <ion-icon [name]="wordremember ? 'checkmark-circle' : 'checkmark-circle-outline'" [class.rem-active]="wordremember"></ion-icon>
+        <span>已记住</span>
+      </button>
+    </div>
   </ion-card>
   <ion-grid>
     <ion-row>
-      <ion-col width-40><button ion-button full (click)="nextleft()">下</button></ion-col>
-      <ion-col width-20><button ion-button full (click)="previous()" color="secondary">上</button></ion-col>
-      <ion-col width-40><button ion-button full (click)="nextright()">下</button></ion-col>
+      <ion-col width-50><button ion-button full color="secondary" (click)="previous()"><ion-icon name="arrow-back"></ion-icon> 上一个</button></ion-col>
+      <ion-col width-50><button ion-button full (click)="next()">下一个 <ion-icon name="arrow-forward"></ion-icon></button></ion-col>
     </ion-row>
-    <ion-row *ngIf="lefthandmode">
+    <!-- 默克模式 UI（逻辑保留，暂时隐藏）
+    <ion-row>
       <ion-col width-25>
         <ion-item>
-          <ion-toggle (disabled)="disablewordremember" [(ngModel)]="wordremember" (ionChange)="changewordremember()"></ion-toggle>
+          <ion-toggle [disabled]="disablewordremember" [(ngModel)]="wordremember" (ionChange)="toggleRemember()"></ion-toggle>
         </ion-item>
       </ion-col>
       <ion-col width-75>
@@ -36,39 +46,16 @@
         </ion-item>
       </ion-col>
     </ion-row>
-    <ion-row *ngIf="lefthandmode" class="comment">
-      <ion-col width-25 center text-center>
-        已记住
-      </ion-col>
-      <ion-col width-75 center text-center>
-        记忆单词
-      </ion-col>
+    <ion-row class="comment">
+      <ion-col width-25 center text-center>已记住</ion-col>
+      <ion-col width-75 center text-center>记忆单词（输入假名按回车）</ion-col>
     </ion-row>
-    <ion-row *ngIf="!lefthandmode">
-      <ion-col width-75>
-        <ion-item>
-          <ion-input type="text" [(ngModel)]="trialtext" (keypress)="trialtextchallenge($event)"></ion-input>
-        </ion-item>
-      </ion-col>
-      <ion-col width-25>
-        <ion-item>
-          <ion-toggle (disabled)="disablewordremember" [(ngModel)]="wordremember" (ionChange)="changewordremember()"></ion-toggle>
-        </ion-item>
-      </ion-col>
-    </ion-row>
-    <ion-row *ngIf="!lefthandmode" class="comment">
-      <ion-col width-75 center text-center>
-        记忆单词
-      </ion-col>
-      <ion-col width-25 center text-center>
-        已记住
-      </ion-col>
-    </ion-row>
+    -->
   </ion-grid>
   <ion-list>
     <ion-item-group>
       <ion-item-divider color="light">单词选项</ion-item-divider>
-      <ion-item>
+      <ion-item *ngIf="!fromFavorites">
         <ion-label>自动跳过已记住单词</ion-label>
         <ion-toggle (disabled)="disableonlyremember" [(ngModel)]="onlyremember"></ion-toggle>
       </ion-item>

@@ -1,4 +1,4 @@
-﻿<ion-header>
+<ion-header>
   <ion-navbar>
     <ion-title>搜索</ion-title>
   </ion-navbar>
@@ -9,23 +9,33 @@
   <ion-list>
     <ion-item-group *ngIf="currentItems.words.length > 0">
       <ion-item-divider color="light">单词</ion-item-divider>
-      <button ion-item (click)="openItem(word)" *ngFor="let word of currentItems.words">
-        <h2>
-          <span [innerHTML]="word.kana | japanruby"></span>
-          [{{word.pos}}]
-        </h2>
-        <p [innerHTML]="word.desc | japanruby"></p>
-        <p item-right [innerHTML]="word.word | japanruby"></p>
-      </button>
+      <ion-item *ngFor="let word of currentItems.words">
+        <button ion-button clear item-left class="list-fav-btn" (click)="toggleWordFav(word); $event.stopPropagation()">
+          <ion-icon [name]="isWordFav(word) ? 'star' : 'star-outline'" [class.fav-active]="isWordFav(word)"></ion-icon>
+        </button>
+        <button ion-button clear (click)="openItem(word)" class="list-item-btn">
+          <h2>
+            <span [innerHTML]="word.kana | japanruby"></span>
+            [{{word.pos}}]
+          </h2>
+          <p [innerHTML]="word.desc | japanruby"></p>
+          <p [innerHTML]="word.word | japanruby"></p>
+        </button>
+      </ion-item>
       <button ion-item (click)="moreWords()" *ngIf="wordsShowMore">查看更多</button>
     </ion-item-group>
     <ion-item-group *ngIf="currentItems.grammar.length > 0">
       <ion-item-divider color="light">语法</ion-item-divider>
-      <button ion-item (click)="openItem(g)" *ngFor="let g of currentItems.grammar">
-        <h2 [innerHTML]="g.expression"></h2>
-        <p [innerHTML]="g.explanation | newline" class="line-break"></p>
-        <p item-right [innerHTML]="g.shortexplain"></p>
-      </button>
+      <ion-item *ngFor="let g of currentItems.grammar">
+        <button ion-button clear item-left class="list-fav-btn" (click)="toggleGrammarFav(g); $event.stopPropagation()">
+          <ion-icon [name]="isGrammarFav(g) ? 'star' : 'star-outline'" [class.fav-active]="isGrammarFav(g)"></ion-icon>
+        </button>
+        <button ion-button clear (click)="openItem(g)" class="list-item-btn">
+          <h2 [innerHTML]="g.expression"></h2>
+          <p [innerHTML]="g.explanation | newline" class="line-break"></p>
+          <p [innerHTML]="g.shortexplain"></p>
+        </button>
+      </ion-item>
       <button ion-item (click)="moreGrammar()" *ngIf="grammarShowMore">查看更多</button>
     </ion-item-group>
   </ion-list>

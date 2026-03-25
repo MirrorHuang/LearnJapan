@@ -1,8 +1,9 @@
-﻿import { ReciteListPage } from './recite-list/recite-list';
+import { ReciteListPage } from './recite-list/recite-list';
 import { TabsPage } from './tabs/tabs';
 import { ListMasterPage } from './list-master/list-master';
 import { SearchPage } from './search/search';
 import { SettingsPage } from './settings/settings';
+import { FavoritesPage } from './favorites/favorites';
 
 // The page the user lands on after opening the app and without a session
 export const FirstRunPage = TabsPage;
@@ -16,3 +17,4 @@ export const Tab1Root = ListMasterPage;
 export const Tab2Root = SearchPage;
 export const Tab3Root = ReciteListPage;
 export const Tab4Root = SettingsPage;
+export const Tab5Root = FavoritesPage;
